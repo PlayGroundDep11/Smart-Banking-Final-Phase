@@ -13,7 +13,7 @@ public class SmartBanking{
     final static String SUCCESS_MSG = String.format("\t%s%s%s\n", COLOR_GREEN_BOLD, "%s", RESET);
 
     public static ArrayList<String> customerName = new ArrayList<>();       // Names are maintain as arraylist
-    private static ArrayList<Integer> customeraccountBalance = new ArrayList<>();   // Account balance are maintain as arraylist
+    private static ArrayList<Double> customeraccountBalance = new ArrayList<>();   // Account balance are maintain as arraylist
     public static ArrayList<String> customerID = new ArrayList<>() ;      // Account Numbers are maintain as arraylist
 
     public static void main(String[] args) {
@@ -62,12 +62,12 @@ public class SmartBanking{
                 case CREATE_ACCOUNT :
                     System.out.printf("\tNew Customer ID: SDB-%05d\n", (customerID.size() + 1));
                     String name = isNameValid() ;
-                    int initialDeposit ;
+                    Double initialDeposit ;
                     boolean valid =false ;
                     do {
                         valid = false ;
                         System.out.print("\tEnter Initial Deposit :");
-                        initialDeposit = scanner.nextInt() ;
+                        initialDeposit = scanner.nextDouble() ;
                         scanner.nextLine() ;
                         if(initialDeposit<=5000){
                             System.out.printf(ERROR_MSG,"Iniial ammount should be higher than 5000");
@@ -84,7 +84,12 @@ public class SmartBanking{
                     screen = DASHBOARD;
                     break;
                 case DEPOSITS :
-                    String accNumber = scanner.nextLine().strip() ;
+                    int customerIndex = accNumValidation() ;
+                    System.out.printf("Current balance : Rs %s");
+                    System.out.print("\tDo you want to add another{Y/N} :");
+                    if (scanner.nextLine().strip().toUpperCase().equals("Y")) continue;
+                    screen = DASHBOARD;
+                    break ;
             }
         }while (true);
     }
@@ -103,7 +108,7 @@ public class SmartBanking{
             for (int i = 0; i < name.length(); i++) {
                 if (!(Character.isLetter(name.charAt(i)) || 
                     Character.isSpaceChar(name.charAt(i))) ) {
-                    System.out.printf("\t%sInvalid Name%s\n", COLOR_RED_BOLD, RESET);
+                    System.out.printf("\t%sInvalid Name%s", COLOR_RED_BOLD, RESET);
                     valid = true;
                     break;
                 }
@@ -113,32 +118,35 @@ public class SmartBanking{
         return name ;
     }
 
-    public static String accNumValidation(){
-        String accoutNumber ;
-        boolean valid = false ;
+    public static int accNumValidation(){
+        String accountNumber ;
+        boolean valid = true ;
+
         loop :
         do {
-            System.out.print("Enter Account Number : ");
-            accoutNumber  = scanner.nextLine().strip() ;
-            if(accoutNumber.isEmpty()){
-                System.out.printf(ERROR_MSG,"Account number cannot be empty");
-                continue ;
+            System.out.print("\tEnter Account Number : ");
+            accountNumber  = scanner.nextLine().strip() ;
+            if(accountNumber.isEmpty()){
+                System.out.printf(ERROR_MSG,"Account number cannot be empty. Enter Again !");
+                continue loop;
             }
-            if( !accoutNumber.startsWith("SDB-") || accoutNumber.length()<9){
+            if( !accountNumber.startsWith("SDB-") || accountNumber.length()<9){
                 System.out.printf(ERROR_MSG,"Invalid format");
+                continue loop;
             }
-            char[] charArray = accoutNumber.toCharArray();
+            char[] charArray = accountNumber.toCharArray();
             for(int i = 4 ; i < charArray.length ; i++ ){
                 if(!Character.isDigit(charArray[i])){
                     System.out.printf(ERROR_MSG,"Invalid Format !");
                     continue loop;
                 }
             }
-            if(!customerID.contains(accoutNumber)){
+            if(!customerID.contains(accountNumber)){
                 System.out.printf(ERROR_MSG,"This account number does not exists !!");
+                continue loop;
             }
             valid = false ;
         } while (valid);
-        return accoutNumber ;
+        return customerID.indexOf(accountNumber) ;
     }
 }
