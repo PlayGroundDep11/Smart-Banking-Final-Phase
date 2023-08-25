@@ -1,30 +1,33 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class SmartbankingCLI{
+public class SmartBanking{
     private static Scanner scanner= new Scanner(System.in) ;
+    final static String CLEAR = "\033[H\033[2J";
+    final static String COLOR_BLUE_BOLD = "\033[34;1m";
+    final static String COLOR_RED_BOLD = "\033[31;1m";
+    final static String COLOR_GREEN_BOLD = "\033[33;1m";
+    final static String RESET = "\033[0m";
+    final static String ERROR_MSG = String.format("\t%s%s%s\n", COLOR_RED_BOLD, "%s", RESET);
+    final static String SUCCESS_MSG = String.format("\t%s%s%s\n", COLOR_GREEN_BOLD, "%s", RESET);
+
+    public static ArrayList<String[]> customer = new ArrayList<>();       // Sepeate String arrays with length 2 for each customers name and account balance
+    public static ArrayList<String> accountNumber = new ArrayList<>() ;      // Account Numbers are maintain as arraylist
+
     public static void main(String[] args) {
-        final String CLEAR = "\033[H\033[2J";
-        final String COLOR_BLUE_BOLD = "\033[34;1m";
-        final String COLOR_RED_BOLD = "\033[31;1m";
-        final String COLOR_GREEN_BOLD = "\033[33;1m";
-        final String RESET = "\033[0m";
 
         final String DASHBOARD = "Welcome to Smart Banking";
         final String CREATE_ACCOUNT = "Create New Account";
         final String DEPOSITS = "Deposit";
         final String WITHDRAW = "WITHDRAW";
-        final String TRANSFER = "🖨 TRANSFER";
+        final String TRANSFER = " TRANSFER";
         final String CHECK_BALANCE = "Check Balance" ;
         final String DELETE_ACCOUNT = "Delete account" ;
 
-        final String ERROR_MSG = String.format("\t%s%s%s\n", COLOR_RED_BOLD, "%s", RESET);
-        final String SUCCESS_MSG = String.format("\t%s%s%s\n", COLOR_GREEN_BOLD, "%s", RESET);
 
         String screen = DASHBOARD;
-        String[] customerNames = new String[0] ;
-        String[] cutomerIDarray = new String[0] ;
-        double[] accountBalance = new double[0];
+
 
         do {
             final String APP_TITLE = String.format("%s%s%s",COLOR_BLUE_BOLD, screen, RESET);
@@ -56,7 +59,8 @@ public class SmartbankingCLI{
                     }
                     break;
                 case CREATE_ACCOUNT :
-                    System.out.printf("\tNew Customer ID: SDB-%05d\n", (customerNames.length + 1));
+                    String[] customerDetails = new String[2] ;
+                    System.out.printf("\tNew Customer ID: SDB-%05d\n", (customer.size() + 1));
 
                     boolean valid;
                     String name;
@@ -78,18 +82,8 @@ public class SmartbankingCLI{
                             }
                         }
                     }while(valid);
-                    String[] newCustomerNames = new String[customerNames.length+1] ;
-                    String[] newCustomerIDArray = new String[customerNames.length+1] ;
-                    double[] newAccountBalance = new double[accountBalance.length + 1] ;
-                    for(int i = 0 ; i < customerNames.length ; i++){
-                        newCustomerNames[i] = customerNames[i] ;
-                        newCustomerIDArray[i] = cutomerIDarray[i] ;
-                        newAccountBalance[i] = accountBalance[i];
-                    }
-                    newCustomerNames[newCustomerNames.length - 1] = name ;
-                    newCustomerIDArray[newCustomerIDArray.length - 1] = String.format("SDB-%05d", cutomerIDarray.length) ;
-                    customerNames = newCustomerNames ;
-                    cutomerIDarray = newCustomerIDArray ;
+                    accountNumber.add(String.format("SDB-%05d", customer.size() + 1));
+                    customerDetails[0] = name ;
                     int initialDeposit ;
                     do {
                         valid = false ;
@@ -103,53 +97,18 @@ public class SmartbankingCLI{
                         }
                         
                     } while (valid) ;
-                    newAccountBalance[newAccountBalance.length-1] = initialDeposit ;
-                    accountBalance = newAccountBalance ;
-                    System.out.printf("\t%sID SDB:%05d | Name: %s Added successfully!%s\n",COLOR_GREEN_BOLD,customerNames.length,name,RESET);
+                    customerDetails[1] = initialDeposit+"" ;
+                    customer.add(customerDetails);          //String contain name and account balance added to customer list
+                    System.out.printf("\t%sID SDB:%05d | Name: %s Added successfully!%s\n",COLOR_GREEN_BOLD,customer.size(),name,RESET);
                     System.out.print("\tDo you want to add another{Y/N} :");
                     if (scanner.nextLine().strip().toUpperCase().equals("Y")) continue;
                     screen = DASHBOARD;
                     break;
                 case DEPOSITS :
-                    String accNumber ;
-                    loop :
-                    do {
-                        valid = false ;
-                        System.out.print("Enter Account Number :");
-                        accNumber = scanner.nextLine().strip() ;
-                        if(accNumber.isBlank()){
-                            System.out.printf(ERROR_MSG,"Acc number cannot be empty");
-                            valid = true ;
-                            continue ;
-                        }
-                        if(accNumber.startsWith("SDB-") || accNumber.length()<5 ){
-                            System.out.printf(ERROR_MSG, "Invalid Format!") ;
-                            valid = true ;
-                            continue ;
-                        }
-                        for(int i = 4 ; i < accNumber.length(); i++){
-                            if( !Character.isDigit(accNumber.charAt(i)) ){
-                                 System.out.printf(ERROR_MSG,"Invalid Format");
-                                 valid = true ;
-                                 continue loop ;
-                            }
-                        }
-                        int index = -1;
-                        for(int i = 0 ; i < cutomerIDarray.length ; i++){
-                          if(accNumber.equalsIgnoreCase(cutomerIDarray[i])){
-                            System.out.println("Account found");
-                            index = i ;
-                          }
-                        }
-                        if(index<0){
-                            System.out.printf(ERROR_MSG,"Account Number not found!!");
-                            valid = true ;
-                            continue ;
-                        }
-                        System.out.println(customerNames[index]);
-                        break;
-                    } while (valid);
+                    System.out.print("\tEnter Account number to add deposit :");
+                    String accNumber = scanner.nextLine().strip() ;
             }
         }while (true);
     }
+    public static void
 }
