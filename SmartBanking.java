@@ -85,8 +85,23 @@ public class SmartBanking{
                     break;
                 case DEPOSITS :
                     int customerIndex = accNumValidation() ;
-                    System.out.printf("Current balance : Rs %s");
-                    System.out.print("\tDo you want to add another{Y/N} :");
+                    System.out.printf(SUCCESS_MSG,String.format("Current balance : Rs %,.2f",customeraccountBalance.get(customerIndex)));
+                    Double depositAmount ;
+                    do {
+                        valid = false ;
+                        System.out.print("\tEnter Deposit Amount:");
+                        depositAmount = scanner.nextDouble() ;
+                        scanner.nextLine() ;
+                        if(depositAmount<=500){
+                            System.out.printf(ERROR_MSG,"Deposit ammount should be higher than 500");
+                            valid = true ;
+                            continue;
+                        }  
+                    } while (valid) ;
+                    customeraccountBalance.set(customerIndex, customeraccountBalance.get(customerIndex)+depositAmount);
+                    System.out.printf(SUCCESS_MSG,String.format("Success ! | New Account Balaance : RS %,.2f", customeraccountBalance.get(customerIndex)));
+                    System.out.println(customeraccountBalance);
+                    System.out.print("\tDo you want to add another Deposit{Y/N} :");
                     if (scanner.nextLine().strip().toUpperCase().equals("Y")) continue;
                     screen = DASHBOARD;
                     break ;
@@ -149,4 +164,5 @@ public class SmartBanking{
         } while (valid);
         return customerID.indexOf(accountNumber) ;
     }
+
 }
