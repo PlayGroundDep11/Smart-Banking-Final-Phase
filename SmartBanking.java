@@ -145,7 +145,7 @@ public class SmartBanking{
                         System.out.print("\tEnter Withdraw Amount:");
                         transferAmount = scanner.nextDouble() ;
                         scanner.nextLine() ;
-                        if(transferAmount<=500){
+                        if(transferAmount<=100){
                             System.out.printf(ERROR_MSG,"Transfer ammount should be higher than 100");
                             valid = true ;
                             continue;
@@ -162,6 +162,18 @@ public class SmartBanking{
                     System.out.printf(SUCCESS_MSG,String.format("Sender's Account : %s , Curremt balance : RS %,.2f ", customerID.get(sendersAccIndex),customeraccountBalance.get(sendersAccIndex)));
                     System.out.printf(SUCCESS_MSG,String.format("Recievers Account : %s , Current balance : RS %,.2f", customerID.get(recieversAccIndex),customeraccountBalance.get(recieversAccIndex)));
                     System.out.print("\tDo you want to perform another Transfer{Y/N} :");
+                    if (scanner.nextLine().strip().toUpperCase().equals("Y")) continue;
+                    screen = DASHBOARD;
+                    break ;
+                case CHECK_BALANCE :
+                    int customerAccindex = accNumValidation() ;
+                    System.out.printf(SUCCESS_MSG,String.format("Current balance : Rs %,.2f",customeraccountBalance.get(customerAccindex)));
+                    if(customeraccountBalance.get(customerAccindex)<=500){
+                            System.out.printf(ERROR_MSG,"Not enough balance to withdraw");
+                    }else{
+                        System.out.printf(SUCCESS_MSG,String.format("Amount available to withdraw %,.2f", customeraccountBalance.get(customerAccindex) - 500 ));
+                    } 
+                    System.out.print("\tDo you want to check another Balance{Y/N} :");
                     if (scanner.nextLine().strip().toUpperCase().equals("Y")) continue;
                     screen = DASHBOARD;
                     break ;
