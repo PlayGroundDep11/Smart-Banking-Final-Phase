@@ -105,6 +105,67 @@ public class SmartBanking{
                     if (scanner.nextLine().strip().toUpperCase().equals("Y")) continue;
                     screen = DASHBOARD;
                     break ;
+                case WITHDRAW :
+                    int customerIndex1 = accNumValidation() ;
+                    System.out.printf(SUCCESS_MSG,String.format("Current balance : Rs %,.2f",customeraccountBalance.get(customerIndex1)));
+                    Double withdrawAmount ;
+                    do {
+                        valid = false ;
+                        System.out.print("\tEnter Withdraw Amount:");
+                        withdrawAmount = scanner.nextDouble() ;
+                        scanner.nextLine() ;
+                        if(withdrawAmount<=500){
+                            System.out.printf(ERROR_MSG,"Withdraw ammount should be higher than 500");
+                            valid = true ;
+                            continue;
+                        } 
+                        if(withdrawAmount>customeraccountBalance.get(customerIndex1)){
+                            System.out.printf(ERROR_MSG,"Withdraw ammount should lower than account balance");
+                            valid = true ;
+                            continue;
+                        }  
+                    } while (valid) ;
+                    customeraccountBalance.set(customerIndex1,customeraccountBalance.get(customerIndex1)-withdrawAmount);
+                    System.out.printf(SUCCESS_MSG,String.format("Success ! | New Account Balaance : RS %,.2f", customeraccountBalance.get(customerIndex1)));
+                    System.out.println(customeraccountBalance);
+                    System.out.print("\tDo you want to add anothow withdrawel{Y/N} :");
+                    if (scanner.nextLine().strip().toUpperCase().equals("Y")) continue;
+                    screen = DASHBOARD;
+                    break ;
+                case TRANSFER :
+                    System.out.println("\tEnter the account number of the Sender below");
+                    int sendersAccIndex = accNumValidation() ;
+                    System.out.println("\tEnter the account number of the Reciever below");
+                    int recieversAccIndex = accNumValidation() ;
+                    System.out.printf(SUCCESS_MSG,String.format("From Account : %s , Curremt balance : RS %,.2f ", customerID.get(sendersAccIndex),customeraccountBalance.get(sendersAccIndex)));
+                    System.out.printf(SUCCESS_MSG,String.format("To Account : %s , Current balance : RS %,.2f", customerID.get(recieversAccIndex),customeraccountBalance.get(recieversAccIndex)));
+                    double transferAmount ;
+                    do {
+                        valid = false ;
+                        System.out.print("\tEnter Withdraw Amount:");
+                        transferAmount = scanner.nextDouble() ;
+                        scanner.nextLine() ;
+                        if(transferAmount<=500){
+                            System.out.printf(ERROR_MSG,"Transfer ammount should be higher than 100");
+                            valid = true ;
+                            continue;
+                        } 
+                        if(transferAmount>customeraccountBalance.get(sendersAccIndex) || customeraccountBalance.get(sendersAccIndex)<=500){
+                            System.out.printf(ERROR_MSG,"Not enough balance to transfer");
+                            valid = true ;
+                            continue;
+                        }  
+                    } while (valid) ;
+                    customeraccountBalance.set(sendersAccIndex, ( customeraccountBalance.get(sendersAccIndex) - transferAmount - transferAmount*0.02 ) ) ;
+                    customeraccountBalance.set(recieversAccIndex, ( customeraccountBalance.get(recieversAccIndex) + transferAmount ) ) ;
+                    System.out.printf(SUCCESS_MSG,"Transfer Successfull");
+                    System.out.printf(SUCCESS_MSG,String.format("Sender's Account : %s , Curremt balance : RS %,.2f ", customerID.get(sendersAccIndex),customeraccountBalance.get(sendersAccIndex)));
+                    System.out.printf(SUCCESS_MSG,String.format("Recievers Account : %s , Current balance : RS %,.2f", customerID.get(recieversAccIndex),customeraccountBalance.get(recieversAccIndex)));
+                    System.out.print("\tDo you want to perform another Transfer{Y/N} :");
+                    if (scanner.nextLine().strip().toUpperCase().equals("Y")) continue;
+                    screen = DASHBOARD;
+                    break ;
+                
             }
         }while (true);
     }
