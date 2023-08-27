@@ -177,6 +177,22 @@ public class SmartBanking{
                     if (scanner.nextLine().strip().toUpperCase().equals("Y")) continue;
                     screen = DASHBOARD;
                     break ;
+                case DELETE_ACCOUNT :
+                    System.out.println("\tEnter account number below to delete");
+                    int dltAccindex = accNumValidation() ;
+                    System.out.printf(SUCCESS_MSG,String.format("Customer name : %s , Current balance : Rs %,.2f",customerName.get(dltAccindex),customeraccountBalance.get(dltAccindex))); 
+                    System.out.print("\tAre you sure to delete{Y/N} :");
+                    if (scanner.nextLine().strip().toUpperCase().equals("Y")){
+                        System.out.printf(SUCCESS_MSG,String.format("Customer ID : %s ,Successfully Deleted ",customerID.get(dltAccindex) ) );
+                        customeraccountBalance.remove(dltAccindex) ;
+                        customerName.remove(dltAccindex);
+                        customerID.remove(dltAccindex);
+                         
+                    }    
+                    System.out.print("\tDo you want to delete another Account{Y/N} :");
+                    if (scanner.nextLine().strip().toUpperCase().equals("Y")) continue;
+                    screen = DASHBOARD;
+                    break ;
                 
             }
         }while (true);
